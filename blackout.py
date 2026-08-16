@@ -28,7 +28,7 @@ def main():
 
         choice = input("\nBLACKOUT > ").strip()
 
-        if choice == "1":
+                if choice == "1":
             show_system_info()
             pause()
 
