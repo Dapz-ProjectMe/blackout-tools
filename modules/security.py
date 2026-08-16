@@ -241,4 +241,202 @@ def secret_detector():
         for finding in findings:
 
             print(
-                f"[WARNING
+                f"[WARNING] "
+                f"{finding['type']}"
+            )
+
+            print(
+                f"  File : {path}"
+            )
+
+            print(
+                f"  Line : {finding['line']}"
+            )
+
+            total += 1
+
+    print()
+
+    if total == 0:
+        success(
+            "Tidak ditemukan pola secret "
+            "yang terdeteksi."
+        )
+    else:
+        error(
+            f"{total} potensi secret ditemukan."
+        )
+
+        info(
+            "Periksa file tersebut dan "
+            "jangan commit credential asli."
+        )
+
+
+# ==============================
+# FILE INTEGRITY
+# ==============================
+
+def integrity_check():
+    title("FILE INTEGRITY CHECK")
+
+    path = input(
+        "\nFile path: "
+    ).strip()
+
+    if not os.path.isfile(path):
+        error("File tidak ditemukan.")
+        return
+
+    try:
+        with open(path, "rb") as file:
+            digest = hashlib.sha256(
+                file.read()
+            ).hexdigest()
+
+        print()
+        print(f"File : {os.path.abspath(path)}")
+        print(f"SHA256 : {digest}")
+
+        expected = input(
+            "\nExpected SHA-256 "
+            "(kosong untuk hanya melihat): "
+        ).strip().lower()
+
+        if not expected:
+            success(
+                "Integrity hash berhasil dibuat."
+            )
+            return
+
+        if secrets.compare_digest(
+            digest.lower(),
+            expected
+        ):
+            success(
+                "INTEGRITY MATCH."
+            )
+        else:
+            error(
+                "INTEGRITY MISMATCH."
+            )
+
+    except Exception as exc:
+        error(str(exc))
+
+
+# ==============================
+# LOCAL PERMISSION AUDIT
+# ==============================
+
+def permission_audit():
+    title("LOCAL PERMISSION AUDIT")
+
+    root = input(
+        "\nFolder to audit: "
+    ).strip()
+
+    if not os.path.isdir(root):
+        error("Folder tidak ditemukan.")
+        return
+
+    suspicious = 0
+
+    print()
+
+    for current_root, dirs, files in os.walk(root):
+
+        dirs[:] = [
+            directory
+            for directory in dirs
+            if directory != ".git"
+        ]
+
+        for filename in files:
+
+            path = os.path.join(
+                current_root,
+                filename
+            )
+
+            try:
+                mode = os.stat(path).st_mode
+
+                # World-writable file.
+                if mode & 0o002:
+                    print(
+                        f"[WORLD-WRITABLE] {path}"
+                    )
+                    suspicious += 1
+
+            except OSError:
+                continue
+
+    print()
+
+    if suspicious == 0:
+        success(
+            "Tidak ditemukan file "
+            "world-writable."
+        )
+    else:
+        info(
+            f"{suspicious} file perlu diperiksa."
+        )
+
+
+# ==============================
+# SECURITY MENU
+# ==============================
+
+def security_utilities():
+
+    while True:
+
+        title("SECURITY UTILITIES")
+
+        print("""
+[1] SHA-256 File Hash
+[2] SHA-512 File Hash
+[3] Hash Compare
+[4] Password Strength Analyzer
+[5] Secret / Token Detector
+[6] File Integrity Check
+[7] Local Permission Audit
+[0] Back
+""")
+
+        choice = input(
+            "SECURITY > "
+        ).strip()
+
+        if choice == "1":
+            hash_file("sha256")
+
+        elif choice == "2":
+            hash_file("sha512")
+
+        elif choice == "3":
+            hash_compare()
+
+        elif choice == "4":
+            password_strength()
+
+        elif choice == "5":
+            secret_detector()
+
+        elif choice == "6":
+            integrity_check()
+
+        elif choice == "7":
+            permission_audit()
+
+        elif choice == "0":
+            break
+
+        else:
+            error("Pilihan tidak valid.")
+
+        input(
+            "\nENTER untuk kembali..."
+)
