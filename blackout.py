@@ -1,4 +1,11 @@
-from core.ui import banner, menu, title, info, pause
+from core.ui import (
+    banner,
+    menu,
+    title,
+    info,
+    pause
+)
+
 from core.config import load_config
 from core.logger import init_logger, log
 
@@ -28,7 +35,7 @@ def main():
 
         choice = input("\nBLACKOUT > ").strip()
 
-                if choice == "1":
+        if choice == "1":
             show_system_info()
             pause()
 
