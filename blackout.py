@@ -6,6 +6,7 @@ from modules.system import show_system_info
 from modules.files import file_manager
 from modules.textlab import text_lab
 from modules.network import network_diagnostics
+from modules.process import process_center
 
 
 def main():
@@ -46,9 +47,7 @@ def main():
             pause()
 
         elif choice == "6":
-            title("PROCESS CENTER")
-            info("Process module akan dipasang pada tahap berikutnya.")
-            pause()
+            process_center()
 
         elif choice == "7":
             title("AUTOMATION")
