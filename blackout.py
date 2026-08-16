@@ -57,7 +57,8 @@ def main():
             process_center()
 
         elif choice == "7":
-            automation()
+          from modules.project_generator import project_generator
+            project_generator()
 
         elif choice == "8":
             title("SETTINGS")
