@@ -15,6 +15,7 @@ from modules.textlab import text_lab
 from modules.network import network_diagnostics
 from modules.process import process_center
 from modules.security import security_utilities
+from modules.automation import automation
 
 
 def main():
@@ -56,9 +57,7 @@ def main():
             process_center()
 
         elif choice == "7":
-            title("AUTOMATION")
-            info("Automation module akan dipasang pada tahap berikutnya.")
-            pause()
+            automation()
 
         elif choice == "8":
             title("SETTINGS")
