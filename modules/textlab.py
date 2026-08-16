@@ -1,40 +1,225 @@
-import base64
-import hashlib
+import re
 import json
+from collections import Counter
 
 from core.ui import title, success, error, info
-
-
-def text_statistics():
-    title("TEXT STATISTICS")
-
-    text = input("\nMasukkan text: ")
-
-    characters = len(text)
-    characters_no_space = len(text.replace(" ", ""))
-    words = len(text.split())
-    lines = len(text.splitlines()) if text else 0
-
-    print()
-    print(f"Characters          : {characters}")
-    print(f"Characters no space : {characters_no_space}")
-    print(f"Words               : {words}")
-    print(f"Lines               : {lines}")
-
-    success("Statistics complete.")
 
 
 def word_counter():
     title("WORD COUNTER")
 
-    text = input("\nMasukkan text: ").strip()
+    text = input("\nMasukkan teks: ").strip()
 
     if not text:
-        error("Text kosong.")
+        error("Teks kosong.")
         return
 
-    words = text.split()
+    words = re.findall(r"\b[\w'-]+\b", text)
 
+    characters = len(text)
+    characters_no_space = len(text.replace(" ", ""))
+    word_count = len(words)
+    lines = len(text.splitlines()) or 1
+
+    print()
+    print(f"Characters          : {characters}")
+    print(f"Characters no space : {characters_no_space}")
+    print(f"Words               : {word_count}")
+    print(f"Lines               : {lines}")
+
+    success("Text analysis complete.")
+
+
+def text_case_converter():
+    title("CASE CONVERTER")
+
+    text = input("\nText: ")
+
+    if not text:
+        error("Teks kosong.")
+        return
+
+    print("""
+[1] UPPERCASE
+[2] lowercase
+[3] Title Case
+[4] Capitalize
+[5] Swap Case
+[0] Back
+""")
+
+    choice = input("CASE > ").strip()
+
+    if choice == "1":
+        result = text.upper()
+
+    elif choice == "2":
+        result = text.lower()
+
+    elif choice == "3":
+        result = text.title()
+
+    elif choice == "4":
+        result = text.capitalize()
+
+    elif choice == "5":
+        result = text.swapcase()
+
+    elif choice == "0":
+        return
+
+    else:
+        error("Pilihan tidak valid.")
+        return
+
+    print("\nRESULT")
+    print("────────────────────────────────")
+    print(result)
+
+    success("Conversion complete.")
+
+
+def character_frequency():
+    title("CHARACTER FREQUENCY")
+
+    text = input("\nText: ")
+
+    if not text:
+        error("Teks kosong.")
+        return
+
+    characters = Counter(
+        char.lower()
+        for char in text
+        if not char.isspace()
+    )
+
+    print("\nFREQUENCY")
+    print("────────────────────────────────")
+
+    for char, count in characters.most_common():
+        display = "[space]" if char == " " else char
+        print(f"{display:10} : {count}")
+
+    success("Frequency analysis complete.")
+
+
+def word_frequency():
+    title("WORD FREQUENCY")
+
+    text = input("\nText: ").strip()
+
+    if not text:
+        error("Teks kosong.")
+        return
+
+    words = re.findall(r"\b[\w'-]+\b", text.lower())
+
+    if not words:
+        info("Tidak ada kata yang ditemukan.")
+        return
+
+    frequency = Counter(words)
+
+    print("\nWORD FREQUENCY")
+    print("────────────────────────────────")
+
+    for word, count in frequency.most_common():
+        print(f"{word:20} : {count}")
+
+    success("Word frequency analysis complete.")
+
+
+def remove_extra_spaces():
+    title("TEXT CLEANER")
+
+    text = input("\nText: ")
+
+    if not text:
+        error("Teks kosong.")
+        return
+
+    cleaned = re.sub(r"[ \t]+", " ", text)
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
+    cleaned = cleaned.strip()
+
+    print("\nCLEAN RESULT")
+    print("────────────────────────────────")
+    print(cleaned)
+
+    success("Text cleaned successfully.")
+
+
+def json_formatter():
+    title("JSON FORMATTER")
+
+    print("\nMasukkan JSON satu baris.")
+    raw = input("JSON > ").strip()
+
+    if not raw:
+        error("JSON kosong.")
+        return
+
+    try:
+        data = json.loads(raw)
+
+        formatted = json.dumps(
+            data,
+            indent=4,
+            ensure_ascii=False
+        )
+
+        print("\nFORMATTED JSON")
+        print("────────────────────────────────")
+        print(formatted)
+
+        success("JSON berhasil diformat.")
+
+    except json.JSONDecodeError as exc:
+        error(f"JSON tidak valid: {exc}")
+
+
+def text_lab():
+    while True:
+        title("TEXT & DATA LAB")
+
+        print("""
+[1] Word counter
+[2] Case converter
+[3] Character frequency
+[4] Word frequency
+[5] Text cleaner
+[6] JSON formatter
+[0] Back
+""")
+
+        choice = input("TEXTLAB > ").strip()
+
+        if choice == "1":
+            word_counter()
+
+        elif choice == "2":
+            text_case_converter()
+
+        elif choice == "3":
+            character_frequency()
+
+        elif choice == "4":
+            word_frequency()
+
+        elif choice == "5":
+            remove_extra_spaces()
+
+        elif choice == "6":
+            json_formatter()
+
+        elif choice == "0":
+            break
+
+        else:
+            error("Pilihan tidak valid.")
+
+        input("\nENTER untuk kembali...")
     print(f"\nTotal words : {len(words)}")
 
     success("Word counting complete.")
