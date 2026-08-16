@@ -14,6 +14,7 @@ from modules.files import file_manager
 from modules.textlab import text_lab
 from modules.network import network_diagnostics
 from modules.process import process_center
+from modules.security import security_utilities
 
 
 def main():
@@ -49,9 +50,7 @@ def main():
             network_diagnostics()
 
         elif choice == "5":
-            title("SECURITY UTILITIES")
-            info("Security module akan dipasang pada tahap berikutnya.")
-            pause()
+            security_utilities()
 
         elif choice == "6":
             process_center()
