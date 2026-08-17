@@ -16,6 +16,7 @@ from modules.network import network_diagnostics
 from modules.process import process_center
 from modules.security import security_utilities
 from modules.automation import automation
+from modules.project_generator import project_generator
 
 
 def main():
@@ -57,7 +58,6 @@ def main():
             process_center()
 
         elif choice == "7":
-            from modules.project_generator import project_generator
             project_generator()
 
         elif choice == "8":
